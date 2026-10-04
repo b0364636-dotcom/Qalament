@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>قلمنت | الحساب الذهني والسوروبان</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--card:#fff;--text:#1e293b;--muted:#64748b;--blue:#1e40af;--sun:#f59e0b;--light:#06b6d4;--moon:#8b5cf6;--yellow:#fbbf24;--green:#10b981;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Cairo",sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.screen{display:none;min-height:100dvh;padding:16px;max-width:440px;margin:0 auto;position:relative}
+.screen.active{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.icon{width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.mascot-box{width:100px;height:100px;margin:6px auto 10px;background:#fef9c3;border-radius:50%;border:4px solid #fde047;display:flex;align-items:center;justify-content:center}
+.mascot{font-size:3.6rem;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+h1{font-size:2.2rem;font-weight:800;text-align:center;color:var(--blue);margin-bottom:2px}
+.under{width:70px;height:4px;background:var(--yellow);margin:0 auto 10px;border-radius:2px}
+.sub{text-align:center;color:#334155;font-weight:600;font-size:1rem}
+.desc{text-align:center;color:var(--muted);font-size:.88rem;margin:3px 0 6px}
+.trainer{text-align:center;color:#475569;font-size:.88rem;margin-bottom:12px}
+.teams{display:flex;justify-content:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.pill{padding:6px 14px;border-radius:20px;font-weight:700;font-size:.88rem;border:none;cursor:pointer;color:#fff}
+.pill.sun{background:var(--sun)}.pill.light{background:var(--light)}.pill.moon{background:var(--moon)}
+.pill.sel{outline:3px solid #1e293b;outline-offset:2px}
+.sec{font-weight:700;color:var(--blue);margin:14px 0 8px;font-size:1.05rem}
+.card{background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #f1f5f9;cursor:pointer}
+.card h3{font-size:1rem;font-weight:700;color:var(--blue)}.card p{font-size:.78rem;color:var(--muted);margin-top:1px}
+.obtn{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:7px 14px;font-weight:700;font-family:inherit;font-size:.85rem;cursor:pointer}
+.btn{display:block;width:100%;padding:13px;border-radius:50px;font-size:1.1rem;font-weight:800;font-family:inherit;border:none;cursor:pointer;margin-top:10px;text-align:center}
+.btn-y{background:var(--yellow);color:#1e293b}.btn-o{background:#fff;border:2px solid #e2e8f0;color:#475569}
+.btn-g{background:var(--green);color:#fff}.btn-r{background:var(--red);color:#fff}
+.btn:active{transform:scale(.98)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.lvl{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:700}
+.lvl:active{background:#f1f5f9}.lvl small{display:block;font-weight:400;color:var(--muted);font-size:.75rem;margin-top:3px}
+.prob-box{background:#fff;border-radius:18px;padding:20px 14px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.06);margin:12px 0}
+.prob{font-size:2.4rem;font-weight:800;direction:ltr;margin:10px 0;letter-spacing:1px}
+.ans{font-size:1.8rem;font-weight:700;min-height:44px;background:#f1f5f9;border-radius:10px;padding:6px;margin:10px 0;direction:ltr}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto}
+.key{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:14px;font-size:1.3rem;font-weight:700;font-family:inherit;cursor:pointer}
+.key:active{background:#f1f5f9}.key.ok{background:var(--green);color:#fff;border-color:var(--green);grid-column:span 2}.key.clr{background:var(--red);color:#fff;border-color:var(--red)}
+.fb{font-size:1.1rem;font-weight:700;min-height:26px;margin-top:6px}.ok{color:var(--green)}.bad{color:var(--red)}
+.bar{background:#e2e8f0;height:7px;border-radius:4px;margin:10px 0;overflow:hidden}.bar>div{height:100%;background:var(--blue);transition:width .3s}
+.ctrl{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
+.ctrl button{padding:8px 14px;border-radius:10px;border:none;font-weight:700;font-family:inherit;cursor:pointer;background:#e2e8f0}
+.maze{display:grid;gap:2px;margin:12px auto;width:fit-content}
+.cell{width:22px;height:22px;background:#e2e8f0;border-radius:3px}
+.cell.wall{background:#1e293b}.cell.start{background:var(--green)}.cell.end{background:var(--sun)}.cell.path{background:#93c5fd}
+.sudoku{display:grid;grid-template-columns:repeat(9,1fr);gap:1px;max-width:320px;margin:12px auto;background:#94a3b8;border:2px solid #1e293b}
+.s-cell{aspect-ratio:1;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;cursor:pointer}
+.s-cell.fixed{background:#f1f5f9;color:#1e40af}.s-cell.sel{outline:2px solid var(--blue)}
+.diff-wrap{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.diff-img{width:140px;height:140px;background:#e2e8f0;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;border:3px solid transparent}
+.spot{position:absolute;width:18px;height:18px;border:3px solid var(--red);border-radius:50%;pointer-events:none}
+.flash-card{background:#fff;border-radius:16px;padding:24px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.08);min-height:160px;display:flex;flex-direction:column;justify-content:center;margin:12px 0}
+.flash-q{font-size:1.6rem;font-weight:800}.flash-a{font-size:1.4rem;color:var(--blue);margin-top:12px}
+.vic{background:linear-gradient(180deg,#fefce8 0%,#faf8f5 40%);text-align:center;overflow:hidden}
+.conf{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,#f59e0b 2px,transparent 2px),radial-gradient(circle,#3b82f6 2px,transparent 2px),radial-gradient(circle,#ef4444 2px,transparent 2px);background-size:40px 40px,50px 50px,35px 35px;opacity:.45;animation:cf 7s linear infinite}
+@keyframes cf{to{background-position:0 180px,20px 200px,10px 220px}}
+.trophy{width:64px;height:64px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 10px rgba(0,0,0,.08);margin:0 auto 10px}
+.scores{display:flex;justify-content:center;gap:36px;margin:14px 0}
+.sc .l{font-size:.85rem;color:var(--muted)}.sc .v{font-size:1.8rem;font-weight:800}
+.print-area{background:#fff;padding:16px;border-radius:8px;margin:10px 0;font-family:monospace;direction:ltr;text-align:left;max-height:300px;overflow:auto;font-size:.85rem}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="home" class="screen active">
+  <div class="top">
+    <button class="icon" onclick="alert('الصوت قريباً')">🔊</button>
+    <button class="icon" onclick="toggleLang()" id="langBtn">English</button>
+  </div>
+  <div class="mascot-box"><div class="mascot">✏️</div></div>
+  <h1>قلمنت</h1>
+  <div class="under"></div>
+  <p class="sub">الحساب الذهني والسوروبان</p>
+  <p class="desc">الحساب الذهني ممتع ومفيد</p>
+  <p class="trainer">المدربة <b>إيثار حسن كسلا</b><br><span style="font-size:.78rem;color:#94a3b8">Ethar Hassan Kassala</span></p>
+  <div class="teams">
+    <button class="pill moon" data-t="moon" onclick="selTeam(this)">القمر</button>
+    <button class="pill light" data-t="light" onclick="selTeam(this)">الضوء</button>
+    <button class="pill sun sel" data-t="sun" onclick="selTeam(this)">الشمس</button>
+  </div>
+  <p class="sec">الأقسام الرئيسية</p>
+  <div class="card" onclick="go('mental')"><div><h3>الحساب الذهني</h3><p>مدرج حسب المعادلات · تمهيدي → متقدم</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('vedic')"><div><h3>الفيدا</h3><p>طرق الحساب الفيدي</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('sorobanTest')"><div><h3>اختبارات السوروبان العالمية</h3><p>50 · 100 · 200 معادلة + طباعة + إيقاف</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('flashTheory')"><div><h3>فلاش كارد النظري</h3><p>أسئلة نظرية سريعة</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('maze')"><div><h3>المتاهات</h3><p>متاهات حسابية</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('diff')"><div><h3>اختلاف الصور</h3><p>جد الفروقات</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('sudoku')"><div><h3>سودوكو</h3><p>سودوكو أرقام</p></div><button class="obtn">افتح</button></div>
+  <div class="card" onclick="go('shahad')"><div><h3>السهاد 4</h3><p>تحدي المستوى الرابع</p></div><button class="obtn">افتح</button></div>
+</div>
+
+<div id="mental" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>الحساب الذهني</b><span></span></div>
+  <p class="sec">اختر المستوى</p>
+  <div class="grid2">
+    <div class="lvl" onclick="startMental(1)">تمهيدي<small>جمع وطرح بسيط</small></div>
+    <div class="lvl" onclick="startMental(2)">مستوى 1<small>حتى 20</small></div>
+    <div class="lvl" onclick="startMental(3)">مستوى 2<small>حتى 50</small></div>
+    <div class="lvl" onclick="startMental(4)">مستوى 3<small>حتى 100</small></div>
+    <div class="lvl" onclick="startMental(5)">مستوى 4<small>ضرب وقسمة</small></div>
+    <div class="lvl" onclick="startMental(6)">متقدم<small>معادلات مركبة</small></div>
+  </div>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="play" class="screen">
+  <div class="top">
+    <button class="icon" onclick="quitPlay()">←</button>
+    <div><span id="sc">0</span>/<span id="tot">10</span></div>
+    <div class="pill sun" id="pTeam" style="padding:4px 10px;font-size:.75rem">الشمس</div>
+  </div>
+  <div class="bar"><div id="prog" style="width:0%"></div></div>
+  <div class="prob-box">
+    <p style="color:var(--muted);font-size:.9rem">كم الناتج؟</p>
+    <div class="prob" id="prob">3 + 5</div>
+    <div class="ans" id="ansBox">؟</div>
+    <div class="fb" id="fb"></div>
+    <div class="keys">
+      <button class="key" onclick="press(1)">1</button><button class="key" onclick="press(2)">2</button><button class="key" onclick="press(3)">3</button>
+      <button class="key" onclick="press(4)">4</button><button class="key" onclick="press(5)">5</button><button class="key" onclick="press(6)">6</button>
+      <button class="key" onclick="press(7)">7</button><button class="key" onclick="press(8)">8</button><button class="key" onclick="press(9)">9</button>
+      <button class="key clr" onclick="press('C')">C</button><button class="key" onclick="press(0)">0</button><button class="key ok" onclick="submit()">✓</button>
+    </div>
+  </div>
+</div>
+
+<div id="vedic" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>الفيدا</b><span></span></div>
+  <p class="sec">طرق الحساب الفيدي</p>
+  <div class="card" onclick="startVedic('allfrom9')"><div><h3>الكل من 9 والأخير من 10</h3><p>طرح سريع من 1000</p></div><button class="obtn">ابدأ</button></div>
+  <div class="card" onclick="startVedic('vertcross')"><div><h3>عمودي وأفقي</h3><p>ضرب رقمين</p></div><button class="obtn">ابدأ</button></div>
+  <div class="card" onclick="startVedic('nearbase')"><div><h3>قريب من القاعدة</h3><p>ضرب أرقام قريبة من 10/100</p></div><button class="obtn">ابدأ</button></div>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="sorobanTest" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>اختبارات السوروبان</b><span></span></div>
+  <p class="sec">اختر عدد المعادلات</p>
+  <div class="grid2">
+    <div class="lvl" onclick="startSoro(50)">50 معادلة<small>قصير</small></div>
+    <div class="lvl" onclick="startSoro(100)">100 معادلة<small>متوسط</small></div>
+    <div class="lvl" onclick="startSoro(200)">200 معادلة<small>طويل</small></div>
+  </div>
+  <div id="soroArea" class="hidden">
+    <div class="ctrl">
+      <button onclick="soroPause()" id="pauseBtn">⏸ إيقاف</button>
+      <button onclick="soroPrint()">🖨 طباعة</button>
+      <button onclick="soroStop()">⏹ إنهاء</button>
+    </div>
+    <p style="text-align:center;font-weight:700"><span id="soroCur">0</span> / <span id="soroTot">50</span></p>
+    <div class="bar"><div id="soroProg" style="width:0%"></div></div>
+    <div class="prob-box">
+      <div class="prob" id="soroProb">12 + 7</div>
+      <div class="ans" id="soroAns">؟</div>
+      <div class="fb" id="soroFb"></div>
+      <div class="keys">
+        <button class="key" onclick="sPress(1)">1</button><button class="key" onclick="sPress(2)">2</button><button class="key" onclick="sPress(3)">3</button>
+        <button class="key" onclick="sPress(4)">4</button><button class="key" onclick="sPress(5)">5</button><button class="key" onclick="sPress(6)">6</button>
+        <button class="key" onclick="sPress(7)">7</button><button class="key" onclick="sPress(8)">8</button><button class="key" onclick="sPress(9)">9</button>
+        <button class="key clr" onclick="sPress('C')">C</button><button class="key" onclick="sPress(0)">0</button><button class="key ok" onclick="sSubmit()">✓</button>
+      </div>
+    </div>
+    <div class="print-area hidden" id="printBox"></div>
+  </div>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="flashTheory" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>فلاش كارد النظري</b><span></span></div>
+  <div class="flash-card">
+    <div class="flash-q" id="fq">ما هو السوروبان؟</div>
+    <div class="flash-a hidden" id="fa">العداد الصيني / الياباني للحساب الذهني</div>
+  </div>
+  <div class="ctrl">
+    <button class="btn btn-y" style="width:auto;padding:10px 20px" onclick="showAnswer()">أظهر الإجابة</button>
+    <button class="btn btn-g" style="width:auto;padding:10px 20px" onclick="nextFlash()">التالي</button>
+  </div>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="maze" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>المتاهات</b><span></span></div>
+  <p class="desc">وصل من الأخضر إلى الأصفر (انقر الخلايا)</p>
+  <div class="maze" id="mazeGrid"></div>
+  <button class="btn btn-y" onclick="genMaze()">متاهة جديدة</button>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="diff" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>اختلاف الصور</b><span></span></div>
+  <p class="desc">جد <span id="diffLeft">3</span> اختلافات</p>
+  <div class="diff-wrap">
+    <div class="diff-img" id="img1" onclick="checkDiff(event,1)"></div>
+    <div class="diff-img" id="img2" onclick="checkDiff(event,2)"></div>
+  </div>
+  <p style="text-align:center;font-weight:700" id="diffScore">0 / 3</p>
+  <button class="btn btn-y" onclick="newDiff()">جولة جديدة</button>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="sudoku" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>سودوكو</b><span></span></div>
+  <div class="sudoku" id="sudoGrid"></div>
+  <div class="keys" style="max-width:300px;margin:12px auto">
+    <button class="key" onclick="sudoNum(1)">1</button><button class="key" onclick="sudoNum(2)">2</button><button class="key" onclick="sudoNum(3)">3</button>
+    <button class="key" onclick="sudoNum(4)">4</button><button class="key" onclick="sudoNum(5)">5</button><button class="key" onclick="sudoNum(6)">6</button>
+    <button class="key" onclick="sudoNum(7)">7</button><button class="key" onclick="sudoNum(8)">8</button><button class="key" onclick="sudoNum(9)">9</button>
+    <button class="key clr" onclick="sudoNum(0)" style="grid-column:span 3">مسح</button>
+  </div>
+  <button class="btn btn-y" onclick="newSudoku()">سودوكو جديد</button>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="shahad" class="screen">
+  <div class="top"><button class="icon" onclick="go('home')">←</button><b>السهاد 4</b><span></span></div>
+  <p class="sec">تحدي المستوى الرابع</p>
+  <p class="desc">10 معادلات صعبة</p>
+  <button class="btn btn-y" onclick="startShahad()">ابدأ التحدي</button>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+</div>
+
+<div id="victory" class="screen vic">
+  <div class="conf"></div>
+  <p style="color:#94a3b8;font-size:.85rem;margin-top:18px">الكأس</p>
+  <div style="font-size:1.7rem;font-weight:800;color:var(--blue)" id="winName">الشمس</div>
+  <p style="color:var(--muted);font-size:.9rem">البطل · تمهيدي</p>
+  <div style="display:flex;justify-content:center;gap:16px;align-items:center;margin:16px 0">
+    <div class="trophy">🏆</div>
+    <div class="mascot-box" style="width:90px;height:90px;margin:0"><div class="mascot" style="font-size:3rem">✏️</div></div>
+  </div>
+  <div class="scores">
+    <div class="sc"><div class="l">الضوء</div><div class="v" id="scL">0</div></div>
+    <div class="sc"><div class="l">الشمس</div><div class="v" id="scS">10</div></div>
+  </div>
+  <p style="color:#475569;margin:10px 0 2px">شكراً لك يا مدربتنا</p>
+  <p style="color:#64748b;font-size:.85rem;margin-bottom:16px">المدربة إيثار حسن كسلا</p>
+  <button class="btn btn-y" onclick="go('home')">العب مجدداً</button>
+  <button class="btn btn-o" onclick="go('home')">الرئيسية</button>
+  <p style="font-size:.75rem;color:#94a3b8;margin-top:14px;font-weight:600">T.Ethar Hassan Kassala</p>
+</div>
+
+<script>
+let lang="ar", team="sun";
+let G={mode:"mental",lvl:1,score:0,cur:0,tot:10,ans:"",prob:null};
+let soro={tot:50,cur:0,score:0,ans:"",prob:null,list:[],paused:false};
+let flashIdx=0;
+let mazeData=[], mazePos={r:0,c:0};
+let diffSpots=[], diffFound=0;
+let sudoBoard=[], sudoFixed=[], sudoSel=null;
+const teams={sun:"الشمس",light:"الضوء",moon:"القمر"};
+const flashQ=[
+  {q:"ما هو السوروبان؟",a:"العداد الصيني/الياباني للحساب الذهني"},
+  {q:"كم خرزة في الصف العلوي من السوروبان؟",a:"خرزة واحدة (قيمة 5)"},
+  {q:"ماذا تعني العائلة الصغيرة؟",a:"أصدقاء الخمسة (أرقام مجموعها 5)"},
+  {q:"ماذا تعني العائلة الكبيرة؟",a:"أصدقاء العشرة (أرقام مجموعها 10)"},
+  {q:"ما فائدة الحساب الذهني؟",a:"يقوي التركيز ويسرّع التفكير"},
+  {q:"من هي مدربة قلمنت؟",a:"إيثار حسن كسلا"}
+];
+function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active")}
+function selTeam(el){document.querySelectorAll(".pill").forEach(p=>p.classList.remove("sel"));el.classList.add("sel");team=el.dataset.t}
+function toggleLang(){lang=lang==="ar"?"en":"ar";document.getElementById("langBtn").textContent=lang==="ar"?"English":"العربية";document.documentElement.dir=lang==="ar"?"rtl":"ltr"}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function makeProb(lvl){
+  let a,b,op,ans;
+  if(lvl===1){a=rand(1,9);b=rand(0,9-a);op="+";ans=a+b;if(Math.random()>0.5){op="-";a=rand(2,9);b=rand(0,a);ans=a-b}}
+  else if(lvl===2){a=rand(5,20);b=rand(1,15);op=Math.random()>0.4?"+":"-";if(op==="-"&&b>a)[a,b]=[b,a];ans=op==="+"?a+b:a-b}
+  else if(lvl===3){a=rand(10,50);b=rand(5,40);op=Math.random()>0.4?"+":"-";if(op==="-"&&b>a)[a,b]=[b,a];ans=op==="+"?a+b:a-b}
+  else if(lvl===4){a=rand(20,100);b=rand(10,80);op=Math.random()>0.35?"+":"-";if(op==="-"&&b>a)[a,b]=[b,a];ans=op==="+"?a+b:a-b}
+  else if(lvl===5){a=rand(2,12);b=rand(2,9);op="×";ans=a*b;if(Math.random()>0.55){op="÷";ans=a;a=a*b}}
+  else{a=rand(10,50);b=rand(2,12);op=Math.random()>0.5?"×":"+";ans=op==="×"?a*b:a+b}
+  return{text:a+" "+op+" "+b,answer:ans}
+}
+function startMental(lvl){G={mode:"mental",lvl,score:0,cur:0,tot:10,ans:"",prob:null};document.getElementById("tot").textContent=10;document.getElementById("sc").textContent=0;document.getElementById("pTeam").textContent=teams[team];document.getElementById("pTeam").className="pill "+team;document.getElementById("pTeam").style.cssText="padding:4px 10px;font-size:.75rem";go("play");nextQ()}
+function startVedic(type){G={mode:"vedic",lvl:type,score:0,cur:0,tot:8,ans:"",prob:null};document.getElementById("tot").textContent=8;document.getElementById("sc").textContent=0;go("play");nextQ()}
+function startShahad(){G={mode:"shahad",lvl:6,score:0,cur:0,tot:10,ans:"",prob:null};document.getElementById("tot").textContent=10;document.getElementById("sc").textContent=0;go("play");nextQ()}
+function nextQ(){
+  if(G.cur>=G.tot){showVic();return}
+  if(G.mode==="vedic"){
+    if(G.lvl==="allfrom9"){let n=rand(100,999);G.prob={text:"1000 − "+n,answer:1000-n}}
+    else if(G.lvl==="vertcross"){let a=rand(11,99),b=rand(11,99);G.prob={text:a+" × "+b,answer:a*b}}
+    else{let a=rand(8,12),b=rand(8,12);G.prob={text:a+" × "+b,answer:a*b}}
+  } else G.prob=makeProb(G.lvl);
+  G.ans="";
+  document.getElementById("prob").textContent=G.prob.text;
+  document.getElementById("ansBox").textContent="؟";
+  document.getElementById("fb").textContent="";
+  document.getElementById("fb").className="fb";
+  document.getElementById("prog").style.width=(G.cur/G.tot*100)+"%";
+  document.getElementById("sc").textContent=G.score
+}
+function press(v){if(v==="C")G.ans="";else if(G.ans.length<6)G.ans+=v;document.getElementById("ansBox").textContent=G.ans||"؟"}
+function submit(){
+  if(!G.ans)return;
+  const ok=parseInt(G.ans)===G.prob.answer;
+  const fb=document.getElementById("fb");
+  if(ok){G.score++;fb.textContent="✓ أحسنت!";fb.className="fb ok"}
+  else{fb.textContent="✗ "+G.prob.answer;fb.className="fb bad"}
+  G.cur++;setTimeout(nextQ,700)
+}
+function quitPlay(){go("home")}
+function showVic(){
+  document.getElementById("winName").textContent=teams[team];
+  document.getElementById("scS").textContent=team==="sun"?G.score:Math.max(0,10-G.score);
+  document.getElementById("scL").textContent=team==="light"?G.score:Math.max(0,10-G.score);
+  go("victory")
+}
+function startSoro(n){
+  soro={tot:n,cur:0,score:0,ans:"",prob:null,list:[],paused:false};
+  document.getElementById("soroArea").classList.remove("hidden");
+  document.getElementById("soroTot").textContent=n;
+  document.getElementById("soroCur").textContent=0;
+  document.getElementById("pauseBtn").textContent="⏸ إيقاف";
+  nextSoro()
+}
+function nextSoro(){
+  if(soro.cur>=soro.tot){alert("انتهى الاختبار! النتيجة: "+soro.score+" / "+soro.tot);return}
+  if(soro.paused)return;
+  let a=rand(1,99),b=rand(1,50),op=Math.random()>0.4?"+":"-";
+  if(op==="-"&&b>a)[a,b]=[b,a];
+  soro.prob={text:a+" "+op+" "+b,answer:op==="+"?a+b:a-b};
+  soro.list.push(soro.prob.text+" = "+soro.prob.answer);
+  soro.ans="";
+  document.getElementById("soroProb").textContent=soro.prob.text;
+  document.getElementById("soroAns").textContent="؟";
+  document.getElementById("soroFb").textContent="";
+  document.getElementById("soroCur").textContent=soro.cur;
+  document.getElementById("soroProg").style.width=(soro.cur/soro.tot*100)+"%"
+}
+function sPress(v){if(v==="C")soro.ans="";else if(soro.ans.length<6)soro.ans+=v;document.getElementById("soroAns").textContent=soro.ans||"؟"}
+function sSubmit(){
+  if(!soro.ans||soro.paused)return;
+  const ok=parseInt(soro.ans)===soro.prob.answer;
+  document.getElementById("soroFb").textContent=ok?"✓":"✗ "+soro.prob.answer;
+  document.getElementById("soroFb").className="fb "+(ok?"ok":"bad");
+  if(ok)soro.score++;
+  soro.cur++;setTimeout(nextSoro,600)
+}
+function soroPause(){soro.paused=!soro.paused;document.getElementById("pauseBtn").textContent=soro.paused?"▶ متابعة":"⏸ إيقاف"}
+function soroStop(){alert("تم الإيقاف. النتيجة: "+soro.score+" / "+soro.cur);document.getElementById("soroArea").classList.add("hidden")}
+function soroPrint(){
+  const box=document.getElementById("printBox");
+  box.classList.remove("hidden");
+  box.innerHTML="<b>اختبار سوروبان - "+soro.tot+" معادلة</b><br>المدربة: إيثار حسن كسلا<br><br>"+soro.list.map((l,i)=>(i+1)+") "+l).join("<br>");
+  window.print()
+}
+function showAnswer(){document.getElementById("fa").classList.remove("hidden")}
+function nextFlash(){flashIdx=(flashIdx+1)%flashQ.length;document.getElementById("fq").textContent=flashQ[flashIdx].q;document.getElementById("fa").textContent=flashQ[flashIdx].a;document.getElementById("fa").classList.add("hidden")}
+function genMaze(){
+  const R=9,C=9;
+  mazeData=Array.from({length:R},()=>Array(C).fill(1));
+  function carve(r,c){mazeData[r][c]=0;const dirs=[[0,2],[0,-2],[2,0],[-2,0]].sort(()=>Math.random()-0.5);for(const[dr,dc]of dirs){const nr=r+dr,nc=c+dc;if(nr>0&&nr<R-1&&nc>0&&nc<C-1&&mazeData[nr][nc]===1){mazeData[r+dr/2][c+dc/2]=0;carve(nr,nc)}}}
+  carve(1,1);mazeData[1][1]=2;mazeData[R-2][C-2]=3;mazePos={r:1,c:1};
+  renderMaze()
+}
+function renderMaze(){
+  const g=document.getElementById("mazeGrid");g.style.gridTemplateColumns="repeat(9,22px)";g.innerHTML="";
+  mazeData.forEach((row,r)=>row.forEach((v,c)=>{
+    const d=document.createElement("div");d.className="cell"+(v===1?" wall":v===2?" start":v===3?" end":"");
+    if(r===mazePos.r&&c===mazePos.c)d.classList.add("path");
+    d.onclick=()=>moveMaze(r,c);g.appendChild(d)
+  }))
+}
+function moveMaze(r,c){
+  if(Math.abs(r-mazePos.r)+Math.abs(c-mazePos.c)===1&&mazeData[r][c]!==1){mazePos={r,c};renderMaze();if(mazeData[r][c]===3)alert("أحسنت! وصلت للنهاية")}
+}
+genMaze();
+function newDiff(){
+  diffFound=0;diffSpots=[{x:30,y:40},{x:70,y:60},{x:50,y:80}];
+  document.getElementById("diffScore").textContent="0 / 3";
+  document.getElementById("diffLeft").textContent=3;
+  ["img1","img2"].forEach(id=>{const el=document.getElementById(id);el.innerHTML="";el.style.background="hsl("+rand(0,360)+",60%,80%)";el.classList.remove("found")})
+}
+function checkDiff(e,which){
+  const rect=e.currentTarget.getBoundingClientRect();
+  const x=((e.clientX-rect.left)/rect.width)*100, y=((e.clientY-rect.top)/rect.height)*100;
+  for(let i=0;i<diffSpots.length;i++){
+    const s=diffSpots[i];
+    if(Math.abs(s.x-x)<12&&Math.abs(s.y-y)<12){
+      const spot=document.createElement("div");spot.className="spot";spot.style.left=s.x+"%";spot.style.top=s.y+"%";
+      e.currentTarget.appendChild(spot);diffSpots.splice(i,1);diffFound++;
+      document.getElementById("diffScore").textContent=diffFound+" / 3";
+      if(diffFound>=3)alert("وجدت كل الاختلافات!");return
+    }
+  }
+}
+newDiff();
+function newSudoku(){
+  const base=[
+    [5,3,0,0,7,0,0,0,0],[6,0,0,1,9,5,0,0,0],[0,9,8,0,0,0,0,6,0],
+    [8,0,0,0,6,0,0,0,3],[4,0,0,8,0,3,0,0,1],[7,0,0,0,2,0,0,0,6],
+    [0,6,0,0,0,0,2,8,0],[0,0,0,4,1,9,0,0,5],[0,0,0,0,8,0,0,7,9]
+  ];
+  sudoBoard=base.map(r=>r.slice());sudoFixed=base.map(r=>r.map(v=>v!==0));
+  sudoSel=null;renderSudo()
+}
+function renderSudo(){
+  const g=document.getElementById("sudoGrid");g.innerHTML="";
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++){
+    const d=document.createElement("div");d.className="s-cell"+(sudoFixed[r][c]?" fixed":"");
+    d.textContent=sudoBoard[r][c]||"";
+    d.onclick=()=>{if(!sudoFixed[r][c]){sudoSel={r,c};renderSudo()}};
+    if(sudoSel&&sudoSel.r===r&&sudoSel.c===c)d.classList.add("sel");
+    g.appendChild(d)
+  }
+}
+function sudoNum(n){if(!sudoSel)return;sudoBoard[sudoSel.r][sudoSel.c]=n||0;renderSudo()}
+newSudoku();
+document.addEventListener("keydown",e=>{
+  if(!document.getElementById("play").classList.contains("active"))return;
+  if(e.key>="0"&&e.key<="9")press(e.key);
+  if(e.key==="Backspace")press("C");
+  if(e.key==="Enter")submit()
+});
+</script>
+</body>
+</html>
